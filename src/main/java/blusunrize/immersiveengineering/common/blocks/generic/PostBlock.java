@@ -189,6 +189,25 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 		);
 	}
 
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
+	{
+		// makes collision shapes independent on world position
+		int dummy = state.getValue(POST_SLAVE);
+		if(dummy==0)
+			return Shapes.box(.25f, 0, .25f, .75f, 1, .75f);
+		if(dummy <= 2)
+			return Shapes.box(.3125f, 0, .3125f, .6875f, 1, .6875f);
+		return switch(state.getValue(HORIZONTAL_OFFSET))
+				{
+					case NONE -> Shapes.box(.3125f, 0, .3125f, .6875f, 1, .6875f);
+					case NORTH -> Shapes.box(.3125f, 0, .3125f, .6875f, 1, 1);
+					case SOUTH -> Shapes.box(.3125f, 0, 0, .6875f, 1, .6875f);
+					case EAST -> Shapes.box(0, 0, .3125f, .6875f, 1, .6875f);
+					case WEST -> Shapes.box(.3125f, 0, .3125f, 1, 1, .6875f);
+				};
+	}
+
 	private VoxelShape getMainShape(BlockState state, BlockGetter world, BlockPos pos)
 	{
 		int dummy = state.getValue(POST_SLAVE);
